@@ -33,11 +33,11 @@ void ASkaterCharacter::BeginPlay()
 	
 	if (SkateboardClass)
 	{
-		FVector Location = GetActorLocation() + FVector(0.0f, 0.0f, -95.0f);  
-		FRotator Rotation = GetActorRotation() + FRotator(0.0f, 90.0f, 0.0f);
+		FVector Location = GetActorLocation() + FVector(-3.0f, 0.0f, -90.0f);  
+		FRotator Rotation = GetActorRotation() + FRotator(0.0f, 0.0f, 0.0f);
 		FActorSpawnParameters SpawnParams;
 		SkateboardActor = GetWorld()->SpawnActor<AActor>(SkateboardClass, Location, Rotation, SpawnParams);
-		SkateboardActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		SkateboardActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepWorldTransform);
 		SkateboardActor->SetActorScale3D(FVector(1.5f, 1.5f, 1.5f));
 		SkateboardActor->SetActorEnableCollision(false);
 	}
@@ -47,5 +47,4 @@ void ASkaterCharacter::BeginPlay()
 void ASkaterCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }

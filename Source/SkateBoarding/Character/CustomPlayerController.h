@@ -35,6 +35,9 @@ class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 	bool bCanPush = true;
 	bool bIsPushing = false;
 
+	UFUNCTION()
+	void ResetPush();
+
 	FTimerHandle PushCooldownTimer;
 	
 	UPROPERTY(EditAnywhere, Category = "Movement")
@@ -51,6 +54,19 @@ class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* ExitAction;
+
+	FTimerHandle CloseGameTimer;
+	bool bIsPressingEsc = false;
+
+	void StartExitTimer();
+	void CancelExitTimer();
+	void ExitGame();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	float ExitHoldTime = 3.0f;
 
 	ACharacter* ControlledCharacter;
 
@@ -77,9 +93,9 @@ class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 	UPROPERTY(EditAnywhere, Category = Movement)
     float ManualDecelerationRate = 400.0f;
 	
-
 	UPROPERTY(EditAnywhere, Category = Movement)
 	float RotationSpeed = 100.0f;
+
 
 	
 
@@ -90,8 +106,7 @@ class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 	UPROPERTY()
 	UScoreUserWidget* ScoreWidget;
 	
-	UFUNCTION()
-	void ResetPush();
+	
 
 	
 protected:

@@ -10,6 +10,8 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
+
 
 
 void ACustomPlayerController::BeginPlay()
@@ -108,6 +110,8 @@ void ACustomPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ACustomPlayerController::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACustomPlayerController::StartJumping, true);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACustomPlayerController::StopJumping, false);
+		EnhancedInputComponent->BindAction(ExitAction, ETriggerEvent::Started, this, &ACustomPlayerController::StartExitTimer);
+		EnhancedInputComponent->BindAction(ExitAction, ETriggerEvent::Completed, this, &ACustomPlayerController::CancelExitTimer);
 	}
 }
 
@@ -156,8 +160,6 @@ void ACustomPlayerController::Move(const FInputActionValue& Value)
 }
 
 
-
-
 void ACustomPlayerController::StopMoving()
 {
 	MoveDirection = 0;
@@ -192,6 +194,41 @@ void ACustomPlayerController::StopJumping(bool Jumping)
 		ControlledCharacter->StopJumping();
 	}
 }
+
+void ACustomPlayerController::StartExitTimer()
+{
+	if (!bIsPressingEsc)
+	{
+		bIsPressingEsc = true;
+		GetWorld()->GetTimerManager().SetTimer(
+			CloseGameTimer, 
+			this, 
+			&ACustomPlayerController::ExitGame, 
+			ExitHoldTime, 
+			false
+		);
+
+	}
+}
+
+void ACustomPlayerController::CancelExitTimer()
+{
+	if (bIsPressingEsc)
+	{
+		bIsPressingEsc = false;
+		GetWorld()->GetTimerManager().ClearTimer(CloseGameTimer);
+
+	}
+}
+
+void ACustomPlayerController::ExitGame()
+{
+	if (bIsPressingEsc) 
+	{
+		UKismetSystemLibrary::QuitGame(GetWorld(), this, EQuitPreference::Quit, true);
+	}
+}
+
 
 void ACustomPlayerController::Tick(float DeltaTime)
 {

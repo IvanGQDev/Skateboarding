@@ -12,7 +12,6 @@ void ACustomPlayerState::AddScore(int Points)
 {
 	PlayerScore += Points;
 	OnScoreUpdated.Broadcast(PlayerScore);
-	UE_LOG(LogTemp, Warning, TEXT("Nueva puntuación: %d"), PlayerScore);
 }
 
 int32 ACustomPlayerState::GetPlayerScore() const
