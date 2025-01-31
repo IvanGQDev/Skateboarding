@@ -30,6 +30,15 @@ class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PushingAction;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Movement", meta = (AllowPrivateAccess = "true"))
+	bool bCanPush = true;
+	bool bIsPushing = false;
+
+	FTimerHandle PushCooldownTimer;
+	
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float PushCooldown = 1.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* InputContext;
@@ -55,7 +64,6 @@ class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 
 	float CurrentSpeed;
 	int32 MoveDirection;
-	bool bIsPushing = false;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
 	float MaxSpeed = 800.0f;
@@ -65,16 +73,25 @@ class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 
 	UPROPERTY(EditAnywhere, Category = Movement)
 	float DecelerationRate = 400.0f;
+	
+	UPROPERTY(EditAnywhere, Category = Movement)
+    float ManualDecelerationRate = 400.0f;
+	
 
 	UPROPERTY(EditAnywhere, Category = Movement)
 	float RotationSpeed = 100.0f;
 
+	
+
 	//Widget Logic
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSubclassOf<UScoreUserWidget> ScoreWidgetClass; // Usar la clase C++ correcta
+	TSubclassOf<UScoreUserWidget> ScoreWidgetClass;
 
 	UPROPERTY()
 	UScoreUserWidget* ScoreWidget;
+	
+	UFUNCTION()
+	void ResetPush();
 
 	
 protected:

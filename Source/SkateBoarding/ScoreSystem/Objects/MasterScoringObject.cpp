@@ -53,7 +53,6 @@ void AMasterScoringObject::OnOverlapBegin(UPrimitiveComponent* OverlappedCompone
 	
 	if (ACharacter* Character = Cast<ACharacter>(OtherActor))
 	{
-		// Obtener el PlayerState del Character
 		APlayerState* PlayerState = Character->GetPlayerState();
 		if (PlayerState)
 		{

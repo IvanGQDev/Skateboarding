@@ -57,17 +57,31 @@ void ACustomPlayerController::BeginPlay()
 //Character Movement Logic
 void ACustomPlayerController::StartPushing(bool Pushing)
 {
-	if (Pushing)
+	bIsPushing = Pushing;
+	if (Pushing && bCanPush && CurrentSpeed < PushSpeed) 
 	{
-		if (CurrentSpeed < 1000)
-		{
-			CurrentSpeed = FMath::Clamp(CurrentSpeed + 400.0f, NormalSpeed, PushSpeed);
-		}
+		bCanPush = false; 
+
+		CurrentSpeed = FMath::Clamp(CurrentSpeed + 600.0f, NormalSpeed, PushSpeed);
+
+		GetWorld()->GetTimerManager().SetTimer(
+			PushCooldownTimer, 
+			this, 
+			&ACustomPlayerController::ResetPush, 
+			PushCooldown, 
+			false
+		);
 	}
+}
+
+void ACustomPlayerController::ResetPush()
+{
+	bCanPush = true;
 }
 
 void ACustomPlayerController::StopPushing(bool Pushing)
 {
+	bIsPushing = Pushing;
 	if (!Pushing)
 	{
 		CurrentSpeed = FMath::FInterpTo(CurrentSpeed, NormalSpeed, GetWorld()->GetDeltaSeconds(), 5.0f);
@@ -119,6 +133,7 @@ void ACustomPlayerController::Move(const FInputActionValue& Value)
 
 void ACustomPlayerController::Move(const FInputActionValue& Value)
 {
+	
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (MovementVector.Y > KINDA_SMALL_NUMBER)  //Press W
@@ -181,13 +196,7 @@ void ACustomPlayerController::StopJumping(bool Jumping)
 void ACustomPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (ACustomPlayerState* SkateState = GetPlayerState<ACustomPlayerState>())
-	{
-		GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::Yellow, 
-			FString::Printf(TEXT("Puntuacion: %i"), SkateState->GetPlayerScore()));
-	}
 	
-
 	if (!ControlledCharacter) return;
 
 	UCharacterMovementComponent* MovementComponent = ControlledCharacter->GetCharacterMovement();
@@ -200,7 +209,7 @@ void ACustomPlayerController::Tick(float DeltaTime)
 	}
 	else if (MoveDirection == -1) 
 	{
-		CurrentSpeed = FMath::FInterpTo(CurrentSpeed, 0.0f, DeltaTime, DecelerationRate);
+		CurrentSpeed = FMath::FInterpTo(CurrentSpeed, 0.0f, DeltaTime, ManualDecelerationRate);
 	}
 	else
 	{

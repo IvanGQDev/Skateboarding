@@ -18,7 +18,7 @@ ASkaterCharacter::ASkaterCharacter()
 	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetMesh());
-	CameraBoom->TargetArmLength = 400.0f;
+	CameraBoom->TargetArmLength = 200.0f;
 	CameraBoom->bUsePawnControlRotation = true;
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -33,11 +33,12 @@ void ASkaterCharacter::BeginPlay()
 	
 	if (SkateboardClass)
 	{
-		FVector Location = GetActorLocation() + FVector(0.0f, 0.0f, -100.0f); // Ajusta la posición
-		FRotator Rotation = GetActorRotation() + FRotator(0.0f, 90.0f, 0.0f);// Ajusta la rotación
+		FVector Location = GetActorLocation() + FVector(0.0f, 0.0f, -95.0f);  
+		FRotator Rotation = GetActorRotation() + FRotator(0.0f, 90.0f, 0.0f);
 		FActorSpawnParameters SpawnParams;
 		SkateboardActor = GetWorld()->SpawnActor<AActor>(SkateboardClass, Location, Rotation, SpawnParams);
 		SkateboardActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		SkateboardActor->SetActorScale3D(FVector(1.5f, 1.5f, 1.5f));
 		SkateboardActor->SetActorEnableCollision(false);
 	}
 }
