@@ -7,12 +7,17 @@
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
 #include "EnhancedInputSubsystems.h"
+#include "SkateBoarding/ScoreSystem/Widgets/ScoreUserWidget.h"
 #include "CustomPlayerController.generated.h"
+
 
 class UInputMappingContext;
 class UInputComponent;
 class UInputAction;
 struct FInputActionValue;
+
+class UWBP_ScoreWidget;
+
 /**
  * 
  */
@@ -20,6 +25,9 @@ UCLASS()
 class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+	
+	virtual void BeginPlay() override;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PushingAction;
 	
@@ -61,7 +69,13 @@ class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 	UPROPERTY(EditAnywhere, Category = Movement)
 	float RotationSpeed = 100.0f;
 
-	virtual void BeginPlay() override;
+	//Widget Logic
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UScoreUserWidget> ScoreWidgetClass; // Usar la clase C++ correcta
+
+	UPROPERTY()
+	UScoreUserWidget* ScoreWidget;
+
 	
 protected:
 	void Move(const FInputActionValue& Value);

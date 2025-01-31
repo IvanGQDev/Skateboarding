@@ -6,9 +6,8 @@
 #include "GameFramework/PlayerState.h"
 #include "CustomPlayerState.generated.h"
 
-/**
- * 
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnScoreUpdated, int32, NewScore);
+
 UCLASS()
 class SKATEBOARDING_API ACustomPlayerState : public APlayerState
 {
@@ -21,6 +20,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Score")
 	int32 GetPlayerScore() const;
+    	
+	UPROPERTY(BlueprintAssignable, Category = "Score")
+	FOnScoreUpdated OnScoreUpdated;
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Score")

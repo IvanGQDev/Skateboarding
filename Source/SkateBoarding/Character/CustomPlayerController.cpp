@@ -30,8 +30,31 @@ void ACustomPlayerController::BeginPlay()
 	{
     			Subsystem->AddMappingContext(InputContext, 0);
 	}
+
+	//Widget
+
+	if (ScoreWidgetClass)
+	{
+		ScoreWidget = CreateWidget<UScoreUserWidget>(this, ScoreWidgetClass);
+		if (ScoreWidget)
+		{
+			ScoreWidget->AddToViewport();
+		}
+	}else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ERROR: ScoreWidget is nullptr"));
+	}
+	
+	ACustomPlayerState* SkaterState = GetPlayerState<ACustomPlayerState>();
+	if (SkaterState && ScoreWidget)
+	{
+		SkaterState->OnScoreUpdated.AddDynamic(ScoreWidget, &UScoreUserWidget::UpdateScore);
+
+		ScoreWidget->UpdateScore(SkaterState->GetPlayerScore());
+	}
 }
 
+//Character Movement Logic
 void ACustomPlayerController::StartPushing(bool Pushing)
 {
 	if (Pushing)
