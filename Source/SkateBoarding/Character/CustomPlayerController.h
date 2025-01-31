@@ -47,6 +47,7 @@ class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 
 	float CurrentSpeed;
 	int32 MoveDirection;
+	bool bIsPushing = false;
 
 	UPROPERTY(EditAnywhere, Category = Movement)
 	float MaxSpeed = 800.0f;

@@ -32,14 +32,23 @@ void ACustomPlayerController::BeginPlay()
 
 void ACustomPlayerController::StartPushing(bool Pushing)
 {
-	NewSpeed(PushSpeed);
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, "Pushing");
+	if (Pushing)
+	{
+		if (CurrentSpeed < 1000)
+		{
+			CurrentSpeed = FMath::Clamp(CurrentSpeed + 400.0f, NormalSpeed, PushSpeed);
+		}
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("Pushing, Velocidad: %f"), CurrentSpeed));
 }
 
 void ACustomPlayerController::StopPushing(bool Pushing)
 {
-	NewSpeed(NormalSpeed);
-	
+	if (!Pushing)
+	{
+		CurrentSpeed = FMath::FInterpTo(CurrentSpeed, NormalSpeed, GetWorld()->GetDeltaSeconds(), 5.0f);
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("Stop Pushing, Velocidad: %f"), CurrentSpeed));
 }
 
 void ACustomPlayerController::NewSpeed(float Speed)
