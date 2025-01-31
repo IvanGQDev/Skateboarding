@@ -5,9 +5,6 @@
 
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "InputMappingContext.h"
-#include "EnhancedInputSubsystems.h"
-#include "EnhancedInputComponent.h"
 
 // Sets default values
 ASkaterCharacter::ASkaterCharacter()
@@ -21,7 +18,7 @@ ASkaterCharacter::ASkaterCharacter()
 	
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetMesh());
-	CameraBoom->TargetArmLength = 600.0f;
+	CameraBoom->TargetArmLength = 400.0f;
 	CameraBoom->bUsePawnControlRotation = true;
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -34,16 +31,15 @@ void ASkaterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-/*
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	if (SkateboardClass)
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(InputContext, 0);
-		}
+		FVector Location = GetActorLocation() + FVector(0.0f, 0.0f, -100.0f); // Ajusta la posición
+		FRotator Rotation = GetActorRotation() + FRotator(0.0f, 90.0f, 0.0f);// Ajusta la rotación
+		FActorSpawnParameters SpawnParams;
+		SkateboardActor = GetWorld()->SpawnActor<AActor>(SkateboardClass, Location, Rotation, SpawnParams);
+		SkateboardActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform);
+		SkateboardActor->SetActorEnableCollision(false);
 	}
-*/
-	
 }
 
 // Called every frame
@@ -52,49 +48,3 @@ void ASkaterCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
-/*
-// Called to bind functionality to input
-void ASkaterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ASkaterCharacter::Move);
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ASkaterCharacter::Look);
-	}
-}
-
-void ASkaterCharacter::Move(const FInputActionValue& Value)
-{
-	FVector2D MovementVector = Value.Get<FVector2D>();
-	if (Controller != nullptr)
-	{
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation = FRotator(0.0f, Rotation.Yaw, 0.0f);
-
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, "Moving");
-	}
-}
-
-void ASkaterCharacter::Look(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-		GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, "Looking");
-	}
-}
-
-*/

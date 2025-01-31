@@ -22,27 +22,7 @@ class SKATEBOARDING_API ACustomPlayerController : public APlayerController
 	GENERATED_BODY()
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* PushingAction;
-
-	ACharacter* ControlledCharacter;
-
-	UPROPERTY(EditAnywhere, Category = Speed)
-	float PushSpeed;
 	
-	UPROPERTY(EditAnywhere, Category = Speed)
-	float NormalSpeed;
-
-	virtual void BeginPlay() override;
-	
-protected:
-	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
-	
-	//Try
-	virtual void SetupInputComponent() override;
-
-private:
-	//Try
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* InputContext;
 
@@ -54,8 +34,40 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
-	
 
+	ACharacter* ControlledCharacter;
+
+	UPROPERTY(EditAnywhere, Category = Movement, meta=(AllowPrivateAccess = "true"))
+	float PushSpeed;
+	
+	UPROPERTY(EditAnywhere, Category = Movement, meta=(AllowPrivateAccess = "true"))
+	float NormalSpeed;
+
+	FVector2D CurrentMovementVector = FVector2D::ZeroVector;
+
+	float CurrentSpeed;
+	int32 MoveDirection;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	float MaxSpeed = 800.0f;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	float AccelerationRate = 800.0f;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	float DecelerationRate = 400.0f;
+
+	UPROPERTY(EditAnywhere, Category = Movement)
+	float RotationSpeed = 100.0f;
+
+	virtual void BeginPlay() override;
+	
+protected:
+	void Move(const FInputActionValue& Value);
+	void StopMoving();
+	void Look(const FInputActionValue& Value);
+	virtual void SetupInputComponent() override;
+	virtual void Tick(float DeltaTime) override;
 
 public:
 	void StartPushing(bool Pushing);
