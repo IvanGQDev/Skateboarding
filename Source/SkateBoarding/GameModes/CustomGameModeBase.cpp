@@ -2,6 +2,7 @@
 
 
 #include "CustomGameModeBase.h"
+#include "SkateBoarding/Character/CustomPlayerState.h"
 
 ACustomGameModeBase::ACustomGameModeBase()
 {
@@ -9,6 +10,7 @@ ACustomGameModeBase::ACustomGameModeBase()
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
+		PlayerStateClass = ACustomPlayerState::StaticClass();
 	}
 }
 

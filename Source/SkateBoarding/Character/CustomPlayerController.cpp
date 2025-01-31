@@ -2,6 +2,8 @@
 
 
 #include "CustomPlayerController.h"
+
+#include "CustomPlayerState.h"
 #include "EnhancedInputComponent.h"
 #include "InputMappingContext.h"
 #include "SkaterCharacter.h"
@@ -39,7 +41,6 @@ void ACustomPlayerController::StartPushing(bool Pushing)
 			CurrentSpeed = FMath::Clamp(CurrentSpeed + 400.0f, NormalSpeed, PushSpeed);
 		}
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, FString::Printf(TEXT("Pushing, Velocidad: %f"), CurrentSpeed));
 }
 
 void ACustomPlayerController::StopPushing(bool Pushing)
@@ -48,7 +49,6 @@ void ACustomPlayerController::StopPushing(bool Pushing)
 	{
 		CurrentSpeed = FMath::FInterpTo(CurrentSpeed, NormalSpeed, GetWorld()->GetDeltaSeconds(), 5.0f);
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, FString::Printf(TEXT("Stop Pushing, Velocidad: %f"), CurrentSpeed));
 }
 
 void ACustomPlayerController::NewSpeed(float Speed)
@@ -158,6 +158,12 @@ void ACustomPlayerController::StopJumping(bool Jumping)
 void ACustomPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (ACustomPlayerState* SkateState = GetPlayerState<ACustomPlayerState>())
+	{
+		GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::Yellow, 
+			FString::Printf(TEXT("Puntuacion: %i"), SkateState->GetPlayerScore()));
+	}
+	
 
 	if (!ControlledCharacter) return;
 
